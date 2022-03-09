@@ -10,6 +10,8 @@ let formSubmitHandler = function(event) {
     if (location) {
         getDailyWeather(location);
         locationInputEl.value = '';
+        cardContainerEl.textContent = '';
+        todayContainerEl.textContent = '';
     } else {
         alert('please enter a location')
     }
@@ -30,10 +32,12 @@ let getDailyWeather = function(city) {
 };
 
 let displayWeather = function(weather, searchTerm) {
+    
     console.log(weather);
     console.log(searchTerm);
+    
     let today = new Date();
-    let dd = String(today.getDate());
+    let dd = String(today.getDate() + 1);
     let mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
     today = mm + '/' + dd + '/' + yyyy
@@ -41,28 +45,34 @@ let displayWeather = function(weather, searchTerm) {
     for (var i = 1; i < 6; i++) {
         let dailyWeather = weather.list[i].main.temp
         let dailyWind = weather.list[i].wind.speed
-        let dailyVisibility = weather.list[i].weather[0].description
-        let dailyVisibilityIcon = weather.list[i].weather[0].icon
+        let dailyHumidity = weather.list[i].main.humidity
+        let dailyIcon = weather.list[i].weather[0].icon
         
         let weatherEl = document.createElement('div');
         weatherEl.classList = 'card col-sm-2 day1'
 
         let titleEl = document.createElement('h5');
         titleEl.textContent = today
+
+        let iconEl = document.createElement('i');
+        iconEl.setAttribute('class', dailyIcon)
         
         let tempEl = document.createElement('span')
-        tempEl.textContent = "Temp: " + dailyWeather;
+        tempEl.textContent = "Temp: " + dailyWeather + ' F'
         
         let windEl = document.createElement('span')
-        windEl.textContent = "Wind Speed: " + dailyWind
+        windEl.textContent = "Wind: " + dailyWind + ' mph'
 
-        let visEl = document.createElement('span')
-        visEl.textContent = "Visibility: " + dailyVisibility + ' ' + dailyVisibilityIcon
+        let humidEl = document.createElement('span')
+        // visEl.innerHTML = `<i class = 'dailyVisibilityIcon'></i>`
+        humidEl.textContent = "Humidity: " + dailyHumidity + ' %'
         
-        weatherEl.appendChild(titleEl)
+        
+        weatherEl.appendChild(titleEl);
+        weatherEl.appendChild(iconEl);
         weatherEl.appendChild(tempEl);
         weatherEl.appendChild(windEl);
-        weatherEl.appendChild(visEl);
+        weatherEl.appendChild(humidEl);
         cardContainerEl.appendChild(weatherEl);
 
         dd++
