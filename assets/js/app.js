@@ -23,8 +23,10 @@ let getDailyWeather = function(city) {
         if (response.ok) {
             response.json().then(function(data) {
                 let searchedCity = JSON.parse(localStorage.getItem('weatherApi')) || []
+                if (searchedCity.indexOf(city) == -1) {
                 searchedCity.push(city)
                 localStorage.setItem('weatherApi', JSON.stringify(searchedCity)) 
+                }
                 displayWeather(data, city);
                 displayLocalStorage()
                 // console.log(data);
