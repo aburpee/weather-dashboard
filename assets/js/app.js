@@ -22,7 +22,11 @@ let getDailyWeather = function(city) {
     fetch(apiUrl).then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
+                let searchedCity = JSON.parse(localStorage.getItem('weatherApi')) || []
+                searchedCity.push(city)
+                localStorage.setItem('weatherApi', JSON.stringify(searchedCity)) 
                 displayWeather(data, city);
+                displayLocalStorage()
                 // console.log(data);
             })
         } else {
@@ -30,6 +34,16 @@ let getDailyWeather = function(city) {
         }
     })
 };
+
+let displayLocalStorage = function() {
+    let searchedCity = JSON.parse(localStorage.getItem('weatherApi')) || []
+    let buttonTag =''
+    for (let i=0; i<searchedCity.length; i++) {
+        buttonTag += `<li><button class='previoucity'>${searchedCity[i]}</button></li>`
+    }
+    document.querySelector('.previousSearches').innerHTML = buttonTag
+
+}
 
 let oneCallApi = function(lat, long) {
     let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&units=imperial&exclude={part}&appid=${apiKey}`
@@ -114,5 +128,6 @@ let displayWeather = function(weather, searchTerm) {
 }
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
+displayLocalStorage();
 
 
