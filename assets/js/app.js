@@ -41,14 +41,15 @@ let displayLocalStorage = function() {
     let searchedCity = JSON.parse(localStorage.getItem('weatherApi')) || []
     let buttonTag =''
     for (let i=0; i<searchedCity.length; i++) {
-        buttonTag += `<li><button onclick="openWeather()" class='previoucity'>${searchedCity[i]}</button></li>`
+        buttonTag += `<li><button onclick="openWeather(event)" class='previoucity'>${searchedCity[i]}</button></li>`
     }
     document.querySelector('.previousSearches').innerHTML = buttonTag
 
 }
 
-let openWeather = function() {
-    console.log('test')
+let openWeather = function(event) {
+    var city = event.target.textContent
+    getDailyWeather(city)
 }
 
 let oneCallApi = function(lat, long) {
