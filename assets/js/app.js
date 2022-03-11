@@ -4,6 +4,9 @@ let locationInputEl = document.querySelector('#location');
 let cardContainerEl = document.querySelector('#weatherCard')
 let todayContainerEl = document.querySelector('#todayContainer')
 
+
+// accepts form data and calls the get daily weather function. sets conatiner values to zero
+// after search so consecutive searches start anew
 let formSubmitHandler = function(event) {
     event.preventDefault();
     var location = locationInputEl.value.trim();
@@ -17,6 +20,7 @@ let formSubmitHandler = function(event) {
     }
 }
 
+// fetches the open weather map api and sends searches to local storage
 let getDailyWeather = function(city) {
     let apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=${apiKey}`
     fetch(apiUrl).then(function(response) {
@@ -37,6 +41,8 @@ let getDailyWeather = function(city) {
     })
 };
 
+// displays local storage in a container and doesn't allow the same city to 
+// be stored twice
 let displayLocalStorage = function() {
     let searchedCity = JSON.parse(localStorage.getItem('weatherApi')) || []
     let buttonTag =''
@@ -47,11 +53,15 @@ let displayLocalStorage = function() {
 
 }
 
+// allows clicks on previous searches to display the weather
 let openWeather = function(event) {
     var city = event.target.textContent
     getDailyWeather(city)
 }
 
+
+
+//specifically fetches the weather for today and creates elements for it at the top of the screen
 let oneCallApi = function(lat, long) {
     let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&units=imperial&exclude={part}&appid=${apiKey}`
     fetch(apiUrl).then(function(response) {
@@ -68,7 +78,7 @@ let oneCallApi = function(lat, long) {
                 }
                 document.getElementById('todayContainer').innerHTML=
                 `<div class="container">
-                <h6>City:${data}</h6>
+                <h4>Todays Weather</h4>
                 <img src = 'https://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png'>
                 <p>Temp: ${data.current.temp} F</p>
                 <p>Wind: ${data.current.wind_speed} mph</p>
@@ -82,6 +92,9 @@ let oneCallApi = function(lat, long) {
     })
 }
 
+
+
+// specifically displays weather for the next five days using a loop
 let displayWeather = function(weather, searchTerm) {
     
     console.log(weather);
@@ -96,7 +109,7 @@ let displayWeather = function(weather, searchTerm) {
     let long = weather.city.coord.lon
 
     oneCallApi(lat, long)
-
+//using i+8 because the breakdown of weather is by 3 hour increments
     for (var i = 0; i < weather.list.length; i+=8) {
         let dailyWeather = weather.list[i].main.temp
         let dailyWind = weather.list[i].wind.speed
@@ -131,7 +144,7 @@ let displayWeather = function(weather, searchTerm) {
         dd++
         today = mm + '/' + dd + '/' + yyyy
     }
-
+    
 }
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
